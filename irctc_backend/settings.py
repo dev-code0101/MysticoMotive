@@ -70,17 +70,25 @@ WSGI_APPLICATION = "irctc_backend.wsgi.application"
 
 # --- Database configuration (MySQL primary) ---
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "HOST": os.getenv("MYSQL_HOST", "localhost"),
+#         "PORT": os.getenv("MYSQL_PORT", "3306"),
+#         "NAME": os.getenv("MYSQL_DB", "irctc"),
+#         "USER": os.getenv("MYSQL_USER", "irctc_user"),
+#         "PASSWORD": os.getenv("MYSQL_PASSWORD", "irctc_password"),
+#         "OPTIONS": {
+#             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "HOST": os.getenv("MYSQL_HOST", "localhost"),
-        "PORT": os.getenv("MYSQL_PORT", "3306"),
-        "NAME": os.getenv("MYSQL_DB", "irctc"),
-        "USER": os.getenv("MYSQL_USER", "irctc_user"),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD", "irctc_password"),
-        "OPTIONS": {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(
+            BASE_DIR, "db.sqlite3"
+        ),  # BASE_DIR should be defined in your settings
     }
 }
 
@@ -137,7 +145,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
 }
 
-ACCESS_TOKEN_LIFETIME_MINUTES = int(os.getenv("ACCESS_TOKEN_LIFETIME_MINUTES", "15"))
+ACCESS_TOKEN_LIFETIME_MINUTES = int(
+    os.getenv("ACCESS_TOKEN_LIFETIME_MINUTES", "15")
+)
 REFRESH_TOKEN_LIFETIME_DAYS = int(os.getenv("REFRESH_TOKEN_LIFETIME_DAYS", "7"))
 
 SIMPLE_JWT = {
@@ -158,13 +168,17 @@ CORS_ALLOW_ALL_ORIGINS = False if CORS_ALLOWED_ORIGINS else True
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "False").lower() == "true"
+SESSION_COOKIE_SECURE = (
+    os.getenv("SESSION_COOKIE_SECURE", "False").lower() == "true"
+)
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "False").lower() == "true"
 SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "0"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = (
     os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False").lower() == "true"
 )
-SECURE_HSTS_PRELOAD = os.getenv("SECURE_HSTS_PRELOAD", "False").lower() == "true"
+SECURE_HSTS_PRELOAD = (
+    os.getenv("SECURE_HSTS_PRELOAD", "False").lower() == "true"
+)
 
 # --- MongoDB connection (for api_logs & analytics) ---
 
@@ -176,4 +190,3 @@ mongo_client: MongoClient | None = None
 
 if MONGO_URI:
     mongo_client = MongoClient(MONGO_URI)
-
