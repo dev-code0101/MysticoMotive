@@ -15,8 +15,10 @@ class RegisterView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        if serializer.is_valid():
+            user = serializer.save()
+        else:
+            print(serializer.errors)
         refresh = RefreshToken.for_user(user)
         data = {
             "user": UserSerializer(user).data,
@@ -24,4 +26,3 @@ class RegisterView(APIView):
             "refresh": str(refresh),
         }
         return Response(data, status=status.HTTP_201_CREATED)
-
